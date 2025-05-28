@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { 
   Folder, 
@@ -14,6 +15,27 @@ import { Button } from '@/components/ui/button';
 
 const Index = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [currentSection, setCurrentSection] = useState('projects');
+
+  const handleNewProject = () => {
+    console.log('Creating new project...');
+    alert('New Project feature will open project creation form. Feature coming soon!');
+  };
+
+  const handleViewAllProjects = () => {
+    console.log('Viewing all projects...');
+    alert('View All Projects will show complete project list. Feature coming soon!');
+  };
+
+  const handleAddTask = () => {
+    console.log('Adding new task...');
+    alert('Add Task feature will open task creation form. Feature coming soon!');
+  };
+
+  const handleNavigation = (section: string) => {
+    console.log(`Navigation to section: ${section}`);
+    setCurrentSection(section);
+  };
 
   const statsData = [
     {
@@ -93,7 +115,8 @@ const Index = () => {
     <div className="min-h-screen bg-gray-50 flex w-full">
       <Sidebar 
         isCollapsed={sidebarCollapsed} 
-        onToggle={() => setSidebarCollapsed(!sidebarCollapsed)} 
+        onToggle={() => setSidebarCollapsed(!sidebarCollapsed)}
+        onNavigate={handleNavigation}
       />
       
       <div className="flex-1 flex flex-col">
@@ -101,7 +124,7 @@ const Index = () => {
         
         <main className="flex-1 p-6 overflow-auto">
           {/* Welcome Section */}
-          <div className="mb-8">
+          <div className="mb-8" id="projects">
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-3xl font-bold text-gray-900 mb-2">
@@ -111,7 +134,10 @@ const Index = () => {
                   Manage your projects efficiently and spark innovation together
                 </p>
               </div>
-              <Button className="bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white">
+              <Button 
+                className="bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white"
+                onClick={handleNewProject}
+              >
                 <PencilLine className="w-4 h-4 mr-2" />
                 New Project
               </Button>
@@ -131,7 +157,11 @@ const Index = () => {
           <div className="mb-8">
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-xl font-semibold text-gray-900">Recent Projects</h3>
-              <Button variant="outline" size="sm">
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={handleViewAllProjects}
+              >
                 View All Projects
               </Button>
             </div>
@@ -146,10 +176,14 @@ const Index = () => {
           </div>
 
           {/* Task Board Section */}
-          <div className="mb-8">
+          <div className="mb-8" id="tasks">
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-xl font-semibold text-gray-900">Task Board</h3>
-              <Button variant="outline" size="sm">
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={handleAddTask}
+              >
                 <PencilLine className="w-4 h-4 mr-2" />
                 Add Task
               </Button>

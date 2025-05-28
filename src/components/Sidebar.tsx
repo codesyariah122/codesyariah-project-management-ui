@@ -11,21 +11,43 @@ import {
 import { Button } from '@/components/ui/button';
 
 const navigationItems = [
-  { name: 'Projects', icon: Folder, href: '#projects' },
-  { name: 'Team', icon: Users, href: '#team' },
-  { name: 'Calendar', icon: Calendar, href: '#calendar' },
-  { name: 'Tasks', icon: PencilLine, href: '#tasks' },
-  { name: 'Search', icon: Search, href: '#search' },
-  { name: 'Settings', icon: Settings, href: '#settings' },
+  { name: 'Projects', icon: Folder, href: '#projects', action: 'projects' },
+  { name: 'Team', icon: Users, href: '#team', action: 'team' },
+  { name: 'Calendar', icon: Calendar, href: '#calendar', action: 'calendar' },
+  { name: 'Tasks', icon: PencilLine, href: '#tasks', action: 'tasks' },
+  { name: 'Search', icon: Search, href: '#search', action: 'search' },
+  { name: 'Settings', icon: Settings, href: '#settings', action: 'settings' },
 ];
 
 interface SidebarProps {
   isCollapsed: boolean;
   onToggle: () => void;
+  onNavigate?: (section: string) => void;
 }
 
-const Sidebar = ({ isCollapsed, onToggle }: SidebarProps) => {
+const Sidebar = ({ isCollapsed, onToggle, onNavigate }: SidebarProps) => {
   const [activeItem, setActiveItem] = useState('Projects');
+
+  const handleNavigation = (item: typeof navigationItems[0]) => {
+    console.log(`Navigating to: ${item.name}`);
+    setActiveItem(item.name);
+    
+    // Scroll to section if it exists
+    const element = document.querySelector(item.href);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+    
+    // Call parent navigation handler if provided
+    if (onNavigate) {
+      onNavigate(item.action);
+    }
+    
+    // Show alert for demonstration
+    if (item.name !== 'Projects') {
+      alert(`${item.name} feature coming soon! Currently showing Projects dashboard.`);
+    }
+  };
 
   return (
     <div className={`bg-white border-r border-gray-200 transition-all duration-300 ${
@@ -72,7 +94,7 @@ const Sidebar = ({ isCollapsed, onToggle }: SidebarProps) => {
                       ? 'bg-primary text-white shadow-md' 
                       : 'hover:bg-gray-100 text-gray-700'
                   } ${isCollapsed ? 'px-2' : 'px-4'}`}
-                  onClick={() => setActiveItem(item.name)}
+                  onClick={() => handleNavigation(item)}
                   title={isCollapsed ? item.name : undefined}
                 >
                   <Icon className={`h-5 w-5 ${isCollapsed ? '' : 'mr-3'}`} />
