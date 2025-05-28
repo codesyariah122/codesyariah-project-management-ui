@@ -1,5 +1,5 @@
 
-import { calendar, users, folder-check } from 'lucide-react';
+import { Calendar, Users, FolderCheck } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 
@@ -78,15 +78,15 @@ const ProjectCard = ({
         <div className="flex items-center justify-between text-sm text-gray-500">
           <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-1">
-              <calendar className="h-4 w-4" />
+              <Calendar className="h-4 w-4" />
               <span>{dueDate}</span>
             </div>
             <div className="flex items-center space-x-1">
-              <users className="h-4 w-4" />
+              <Users className="h-4 w-4" />
               <span>{teamMembers}</span>
             </div>
           </div>
-          <folder-check className="h-4 w-4 text-primary" />
+          <FolderCheck className="h-4 w-4 text-primary" />
         </div>
       </CardContent>
     </Card>

@@ -1,22 +1,22 @@
 
 import { useState } from 'react';
 import { 
-  folder, 
-  users, 
-  calendar, 
-  settings, 
-  search,
-  pencil
+  Folder, 
+  Users, 
+  Calendar, 
+  Settings, 
+  Search,
+  PencilLine
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const navigationItems = [
-  { name: 'Projects', icon: folder, href: '#projects' },
-  { name: 'Team', icon: users, href: '#team' },
-  { name: 'Calendar', icon: calendar, href: '#calendar' },
-  { name: 'Tasks', icon: pencil, href: '#tasks' },
-  { name: 'Search', icon: search, href: '#search' },
-  { name: 'Settings', icon: settings, href: '#settings' },
+  { name: 'Projects', icon: Folder, href: '#projects' },
+  { name: 'Team', icon: Users, href: '#team' },
+  { name: 'Calendar', icon: Calendar, href: '#calendar' },
+  { name: 'Tasks', icon: PencilLine, href: '#tasks' },
+  { name: 'Search', icon: Search, href: '#search' },
+  { name: 'Settings', icon: Settings, href: '#settings' },
 ];
 
 interface SidebarProps {

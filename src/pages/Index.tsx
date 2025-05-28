@@ -1,10 +1,9 @@
-
 import { useState } from 'react';
 import { 
-  folder, 
-  users, 
-  calendar-check,
-  pencil-line
+  Folder, 
+  Users, 
+  CalendarCheck,
+  PencilLine
 } from 'lucide-react';
 import Sidebar from '@/components/Sidebar';
 import Header from '@/components/Header';
@@ -22,7 +21,7 @@ const Index = () => {
       value: '12',
       change: '+2.5%',
       changeType: 'increase' as const,
-      icon: folder,
+      icon: Folder,
       color: 'bg-primary'
     },
     {
@@ -30,7 +29,7 @@ const Index = () => {
       value: '24',
       change: '+4.1%',
       changeType: 'increase' as const,
-      icon: users,
+      icon: Users,
       color: 'bg-secondary'
     },
     {
@@ -38,7 +37,7 @@ const Index = () => {
       value: '156',
       change: '+12.3%',
       changeType: 'increase' as const,
-      icon: calendar-check,
+      icon: CalendarCheck,
       color: 'bg-accent'
     },
     {
@@ -46,7 +45,7 @@ const Index = () => {
       value: '8',
       change: '-2.1%',
       changeType: 'decrease' as const,
-      icon: pencil-line,
+      icon: PencilLine,
       color: 'bg-orange-500'
     }
   ];
@@ -113,7 +112,7 @@ const Index = () => {
                 </p>
               </div>
               <Button className="bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white">
-                <pencil-line className="w-4 h-4 mr-2" />
+                <PencilLine className="w-4 h-4 mr-2" />
                 New Project
               </Button>
             </div>
@@ -151,7 +150,7 @@ const Index = () => {
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-xl font-semibold text-gray-900">Task Board</h3>
               <Button variant="outline" size="sm">
-                <pencil-line className="w-4 h-4 mr-2" />
+                <PencilLine className="w-4 h-4 mr-2" />
                 Add Task
               </Button>
             </div>

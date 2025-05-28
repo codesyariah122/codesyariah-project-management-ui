@@ -1,5 +1,5 @@
 
-import { search, message-square } from 'lucide-react';
+import { Search, MessageSquare } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
@@ -16,7 +16,7 @@ const Header = () => {
         <div className="flex items-center space-x-4">
           {/* Search */}
           <div className="relative hidden md:block">
-            <search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
             <Input
               placeholder="Search projects, tasks..."
               className="pl-10 w-64 border-gray-300 focus:border-primary"
@@ -25,7 +25,7 @@ const Header = () => {
           
           {/* Notifications */}
           <Button variant="ghost" size="sm" className="relative hover:bg-gray-100">
-            <message-square className="h-5 w-5 text-gray-600" />
+            <MessageSquare className="h-5 w-5 text-gray-600" />
             <span className="absolute -top-1 -right-1 h-4 w-4 bg-red-500 rounded-full text-xs text-white flex items-center justify-center">
               3
             </span>

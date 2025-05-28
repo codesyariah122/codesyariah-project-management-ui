@@ -1,6 +1,6 @@
 
 import { useState } from 'react';
-import { pencil, calendar-plus, users } from 'lucide-react';
+import { PencilLine, CalendarPlus, Users } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -77,11 +77,11 @@ const TaskBoard = () => {
         <p className="text-xs text-gray-600 mb-3 line-clamp-2">{task.description}</p>
         <div className="flex items-center justify-between text-xs text-gray-500">
           <div className="flex items-center space-x-1">
-            <users className="h-3 w-3" />
+            <Users className="h-3 w-3" />
             <span>{task.assignee}</span>
           </div>
           <div className="flex items-center space-x-1">
-            <calendar-plus className="h-3 w-3" />
+            <CalendarPlus className="h-3 w-3" />
             <span>{task.dueDate}</span>
           </div>
         </div>
@@ -99,7 +99,7 @@ const TaskBoard = () => {
             To Do ({tasks.todo.length})
           </h3>
           <Button variant="ghost" size="sm">
-            <pencil className="h-4 w-4" />
+            <PencilLine className="h-4 w-4" />
           </Button>
         </div>
         {tasks.todo.map(task => <TaskCard key={task.id} task={task} />)}
@@ -113,7 +113,7 @@ const TaskBoard = () => {
             In Progress ({tasks.inProgress.length})
           </h3>
           <Button variant="ghost" size="sm">
-            <pencil className="h-4 w-4" />
+            <PencilLine className="h-4 w-4" />
           </Button>
         </div>
         {tasks.inProgress.map(task => <TaskCard key={task.id} task={task} />)}
@@ -127,7 +127,7 @@ const TaskBoard = () => {
             Done ({tasks.done.length})
           </h3>
           <Button variant="ghost" size="sm">
-            <pencil className="h-4 w-4" />
+            <PencilLine className="h-4 w-4" />
           </Button>
         </div>
         {tasks.done.map(task => <TaskCard key={task.id} task={task} />)}
