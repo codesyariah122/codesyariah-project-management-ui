@@ -47,6 +47,7 @@ const Sidebar = ({ isCollapsed, onToggle }: SidebarProps) => {
             size="sm"
             onClick={onToggle}
             className="p-1 hover:bg-gray-100"
+            title={isCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
           >
             <div className="w-5 h-5 flex flex-col justify-center space-y-1">
               <div className="w-full h-0.5 bg-gray-600"></div>
@@ -72,6 +73,7 @@ const Sidebar = ({ isCollapsed, onToggle }: SidebarProps) => {
                       : 'hover:bg-gray-100 text-gray-700'
                   } ${isCollapsed ? 'px-2' : 'px-4'}`}
                   onClick={() => setActiveItem(item.name)}
+                  title={isCollapsed ? item.name : undefined}
                 >
                   <Icon className={`h-5 w-5 ${isCollapsed ? '' : 'mr-3'}`} />
                   {!isCollapsed && <span>{item.name}</span>}
