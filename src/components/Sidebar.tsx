@@ -1,5 +1,6 @@
 
 import { useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { 
   Folder, 
   Users, 
@@ -11,42 +12,30 @@ import {
 import { Button } from '@/components/ui/button';
 
 const navigationItems = [
-  { name: 'Projects', icon: Folder, href: '#projects', action: 'projects' },
-  { name: 'Team', icon: Users, href: '#team', action: 'team' },
-  { name: 'Calendar', icon: Calendar, href: '#calendar', action: 'calendar' },
-  { name: 'Tasks', icon: PencilLine, href: '#tasks', action: 'tasks' },
-  { name: 'Search', icon: Search, href: '#search', action: 'search' },
-  { name: 'Settings', icon: Settings, href: '#settings', action: 'settings' },
+  { name: 'Projects', icon: Folder, path: '/' },
+  { name: 'Team', icon: Users, path: '/team' },
+  { name: 'Calendar', icon: Calendar, path: '/calendar' },
+  { name: 'Tasks', icon: PencilLine, path: '/tasks' },
+  { name: 'Search', icon: Search, path: '/search' },
+  { name: 'Settings', icon: Settings, path: '/settings' },
 ];
 
 interface SidebarProps {
   isCollapsed: boolean;
   onToggle: () => void;
-  onNavigate?: (section: string) => void;
 }
 
-const Sidebar = ({ isCollapsed, onToggle, onNavigate }: SidebarProps) => {
-  const [activeItem, setActiveItem] = useState('Projects');
+const Sidebar = ({ isCollapsed, onToggle }: SidebarProps) => {
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const handleNavigation = (item: typeof navigationItems[0]) => {
     console.log(`Navigating to: ${item.name}`);
-    setActiveItem(item.name);
-    
-    // Scroll to section if it exists
-    const element = document.querySelector(item.href);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
-    
-    // Call parent navigation handler if provided
-    if (onNavigate) {
-      onNavigate(item.action);
-    }
-    
-    // Show alert for demonstration
-    if (item.name !== 'Projects') {
-      alert(`${item.name} feature coming soon! Currently showing Projects dashboard.`);
-    }
+    navigate(item.path);
+  };
+
+  const isActive = (path: string) => {
+    return location.pathname === path;
   };
 
   return (
@@ -85,12 +74,13 @@ const Sidebar = ({ isCollapsed, onToggle, onNavigate }: SidebarProps) => {
         <ul className="space-y-2">
           {navigationItems.map((item) => {
             const Icon = item.icon;
+            const active = isActive(item.path);
             return (
               <li key={item.name}>
                 <Button
-                  variant={activeItem === item.name ? "default" : "ghost"}
+                  variant={active ? "default" : "ghost"}
                   className={`w-full justify-start transition-all duration-200 ${
-                    activeItem === item.name 
+                    active 
                       ? 'bg-primary text-white shadow-md' 
                       : 'hover:bg-gray-100 text-gray-700'
                   } ${isCollapsed ? 'px-2' : 'px-4'}`}

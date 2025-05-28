@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { 
   Folder, 
@@ -15,26 +14,20 @@ import { Button } from '@/components/ui/button';
 
 const Index = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const [currentSection, setCurrentSection] = useState('projects');
 
   const handleNewProject = () => {
     console.log('Creating new project...');
-    alert('New Project feature will open project creation form. Feature coming soon!');
+    // TODO: Implement project creation modal
   };
 
   const handleViewAllProjects = () => {
     console.log('Viewing all projects...');
-    alert('View All Projects will show complete project list. Feature coming soon!');
+    // TODO: Navigate to projects page or show modal
   };
 
   const handleAddTask = () => {
     console.log('Adding new task...');
-    alert('Add Task feature will open task creation form. Feature coming soon!');
-  };
-
-  const handleNavigation = (section: string) => {
-    console.log(`Navigation to section: ${section}`);
-    setCurrentSection(section);
+    // TODO: Implement task creation modal
   };
 
   const statsData = [
@@ -116,7 +109,6 @@ const Index = () => {
       <Sidebar 
         isCollapsed={sidebarCollapsed} 
         onToggle={() => setSidebarCollapsed(!sidebarCollapsed)}
-        onNavigate={handleNavigation}
       />
       
       <div className="flex-1 flex flex-col">
