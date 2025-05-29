@@ -1,7 +1,8 @@
 
-import { Search, MessageSquare } from 'lucide-react';
+import { Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import NotificationDropdown from './NotificationDropdown';
 
 const Header = () => {
   return (
@@ -24,12 +25,7 @@ const Header = () => {
           </div>
           
           {/* Notifications */}
-          <Button variant="ghost" size="sm" className="relative hover:bg-gray-100">
-            <MessageSquare className="h-5 w-5 text-gray-600" />
-            <span className="absolute -top-1 -right-1 h-4 w-4 bg-red-500 rounded-full text-xs text-white flex items-center justify-center">
-              3
-            </span>
-          </Button>
+          <NotificationDropdown />
           
           {/* Profile */}
           <div className="w-8 h-8 bg-gradient-to-r from-primary to-secondary rounded-full cursor-pointer hover:shadow-lg transition-shadow"></div>
