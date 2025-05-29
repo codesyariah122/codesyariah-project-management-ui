@@ -1,5 +1,6 @@
 
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { PlusCircle, Filter, Search, Edit, Trash2, Calendar, Users } from 'lucide-react';
 import Sidebar from '@/components/Sidebar';
 import Header from '@/components/Header';
@@ -24,6 +25,7 @@ interface Project {
 }
 
 const Projects = () => {
+  const navigate = useNavigate();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -79,6 +81,10 @@ const Projects = () => {
     project.description.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const handleCardClick = (projectId: number) => {
+    navigate(`/projects/${projectId}`);
+  };
+
   const handleAddProject = (projectData: Omit<Project, 'id'>) => {
     const newProject: Project = {
       ...projectData,
@@ -126,7 +132,8 @@ const Projects = () => {
     setIsDialogOpen(true);
   };
 
-  const openEditDialog = (project: Project) => {
+  const openEditDialog = (project: Project, e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent card click
     setEditingProject(project);
     setIsDialogOpen(true);
   };
@@ -205,7 +212,11 @@ const Projects = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {filteredProjects.map((project) => (
-              <Card key={project.id} className="hover:shadow-lg transition-all duration-300 hover:-translate-y-1 cursor-pointer border border-gray-200">
+              <Card 
+                key={project.id} 
+                className="hover:shadow-lg transition-all duration-300 hover:-translate-y-1 cursor-pointer border border-gray-200"
+                onClick={() => handleCardClick(project.id)}
+              >
                 <CardHeader className="pb-3">
                   <div className="flex items-start justify-between">
                     <CardTitle className="text-lg font-semibold text-gray-800 line-clamp-1">
@@ -215,7 +226,7 @@ const Projects = () => {
                       <Button 
                         variant="ghost" 
                         size="sm"
-                        onClick={() => openEditDialog(project)}
+                        onClick={(e) => openEditDialog(project, e)}
                         className="h-8 w-8 p-0"
                       >
                         <Edit className="w-4 h-4" />
@@ -226,7 +237,10 @@ const Projects = () => {
                             variant="ghost" 
                             size="sm"
                             className="h-8 w-8 p-0 text-red-500 hover:text-red-700"
-                            onClick={() => setDeletingProject(project)}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setDeletingProject(project);
+                            }}
                           >
                             <Trash2 className="w-4 h-4" />
                           </Button>
