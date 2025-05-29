@@ -9,6 +9,7 @@ import Calendar from "./pages/Calendar";
 import Tasks from "./pages/Tasks";
 import Search from "./pages/Search";
 import Settings from "./pages/Settings";
+import Projects from "./pages/Projects";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -20,6 +21,7 @@ const App = () => (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Index />} />
+        <Route path="/projects" element={<Projects />} />
         <Route path="/team" element={<Team />} />
         <Route path="/calendar" element={<Calendar />} />
         <Route path="/tasks" element={<Tasks />} />
