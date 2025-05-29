@@ -1,15 +1,34 @@
 
 import { useState } from 'react';
-import { Users, Mail, Phone, MoreVertical, Plus } from 'lucide-react';
+import { Users, Mail, Phone, MoreVertical, Plus, Edit, Trash2 } from 'lucide-react';
 import Sidebar from '@/components/Sidebar';
 import Header from '@/components/Header';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+import TeamMemberForm from '@/components/TeamMemberForm';
+import { useToast } from '@/hooks/use-toast';
+
+interface TeamMember {
+  id: number;
+  name: string;
+  role: string;
+  email: string;
+  phone: string;
+  avatar: string;
+  status: string;
+  projects: number;
+}
 
 const Team = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [editingMember, setEditingMember] = useState<TeamMember | undefined>(undefined);
+  const [deletingMember, setDeletingMember] = useState<TeamMember | undefined>(undefined);
+  const { toast } = useToast();
 
-  const teamMembers = [
+  const [teamMembers, setTeamMembers] = useState<TeamMember[]>([
     {
       id: 1,
       name: 'Sarah Johnson',
@@ -50,7 +69,59 @@ const Team = () => {
       status: 'Away',
       projects: 2
     }
-  ];
+  ]);
+
+  const handleAddMember = (memberData: Omit<TeamMember, 'id'>) => {
+    const newMember: TeamMember = {
+      ...memberData,
+      id: Math.max(...teamMembers.map(m => m.id)) + 1
+    };
+    setTeamMembers(prev => [...prev, newMember]);
+    setIsDialogOpen(false);
+    toast({
+      title: "Member Added",
+      description: "New team member has been added successfully."
+    });
+  };
+
+  const handleEditMember = (memberData: Omit<TeamMember, 'id'>) => {
+    if (!editingMember) return;
+    
+    setTeamMembers(prev => 
+      prev.map(member => 
+        member.id === editingMember.id 
+          ? { ...memberData, id: editingMember.id }
+          : member
+      )
+    );
+    setEditingMember(undefined);
+    setIsDialogOpen(false);
+    toast({
+      title: "Member Updated",
+      description: "Team member has been updated successfully."
+    });
+  };
+
+  const handleDeleteMember = () => {
+    if (!deletingMember) return;
+    
+    setTeamMembers(prev => prev.filter(member => member.id !== deletingMember.id));
+    setDeletingMember(undefined);
+    toast({
+      title: "Member Deleted",
+      description: "Team member has been deleted successfully."
+    });
+  };
+
+  const openAddDialog = () => {
+    setEditingMember(undefined);
+    setIsDialogOpen(true);
+  };
+
+  const openEditDialog = (member: TeamMember) => {
+    setEditingMember(member);
+    setIsDialogOpen(true);
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 flex w-full">
@@ -69,10 +140,24 @@ const Team = () => {
                 <h2 className="text-3xl font-bold text-gray-900 mb-2">Team Management</h2>
                 <p className="text-gray-600">Manage your team members and their roles</p>
               </div>
-              <Button className="bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white">
-                <Plus className="w-4 h-4 mr-2" />
-                Add Member
-              </Button>
+              <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button 
+                    className="bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white"
+                    onClick={openAddDialog}
+                  >
+                    <Plus className="w-4 h-4 mr-2" />
+                    Add Member
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-md">
+                  <TeamMemberForm
+                    member={editingMember}
+                    onSubmit={editingMember ? handleEditMember : handleAddMember}
+                    onCancel={() => setIsDialogOpen(false)}
+                  />
+                </DialogContent>
+              </Dialog>
             </div>
           </div>
 
@@ -87,7 +172,7 @@ const Team = () => {
                       className="w-20 h-20 rounded-full mx-auto"
                     />
                     <div className={`absolute bottom-0 right-0 w-6 h-6 rounded-full border-2 border-white ${
-                      member.status === 'Active' ? 'bg-green-500' : 'bg-yellow-500'
+                      member.status === 'Active' ? 'bg-green-500' : member.status === 'Away' ? 'bg-yellow-500' : 'bg-gray-500'
                     }`}></div>
                   </div>
                   <CardTitle className="text-lg">{member.name}</CardTitle>
@@ -107,9 +192,47 @@ const Team = () => {
                   
                   <div className="flex items-center justify-between pt-4 border-t">
                     <span className="text-sm font-medium">{member.projects} Projects</span>
-                    <Button variant="ghost" size="sm">
-                      <MoreVertical className="w-4 h-4" />
-                    </Button>
+                    <div className="flex items-center space-x-1">
+                      <Button 
+                        variant="ghost" 
+                        size="sm"
+                        onClick={() => openEditDialog(member)}
+                        className="h-8 w-8 p-0"
+                      >
+                        <Edit className="w-4 h-4" />
+                      </Button>
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button 
+                            variant="ghost" 
+                            size="sm"
+                            className="h-8 w-8 p-0 text-red-500 hover:text-red-700"
+                            onClick={() => setDeletingMember(member)}
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Delete Team Member</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              Are you sure you want to delete {member.name}? This action cannot be undone.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel onClick={() => setDeletingMember(undefined)}>
+                              Cancel
+                            </AlertDialogCancel>
+                            <AlertDialogAction 
+                              onClick={handleDeleteMember}
+                              className="bg-red-500 hover:bg-red-600"
+                            >
+                              Delete
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
