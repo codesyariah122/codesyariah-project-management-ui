@@ -1,4 +1,5 @@
-import { useState } from 'react';
+
+import { useState, useEffect } from 'react';
 import { Settings as SettingsIcon, User, Bell, Shield, Palette } from 'lucide-react';
 import Sidebar from '@/components/Sidebar';
 import Header from '@/components/Header';
@@ -11,36 +12,61 @@ import { Label } from '@/components/ui/label';
 
 const Settings = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const [theme, setTheme] = useState('light');
+  const [theme, setTheme] = useState(() => {
+    // Check if theme is already set in localStorage or system preference
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) return savedTheme;
+    
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    return prefersDark ? 'dark' : 'light';
+  });
   const [notifications, setNotifications] = useState({
     email: true,
     push: false,
     desktop: true
   });
 
+  // Apply theme on component mount and when theme changes
+  useEffect(() => {
+    const applyTheme = (themeValue: string) => {
+      const root = document.documentElement;
+      
+      if (themeValue === 'dark') {
+        root.classList.add('dark');
+      } else if (themeValue === 'light') {
+        root.classList.remove('dark');
+      } else if (themeValue === 'system') {
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (prefersDark) {
+          root.classList.add('dark');
+        } else {
+          root.classList.remove('dark');
+        }
+      }
+      
+      // Save theme preference
+      localStorage.setItem('theme', themeValue);
+    };
+
+    applyTheme(theme);
+    
+    // Listen for system theme changes when in system mode
+    if (theme === 'system') {
+      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+      const handleChange = () => applyTheme('system');
+      mediaQuery.addEventListener('change', handleChange);
+      
+      return () => mediaQuery.removeEventListener('change', handleChange);
+    }
+  }, [theme]);
+
   const handleThemeChange = (value: string) => {
     setTheme(value);
-    
-    // Apply theme to document
-    if (value === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else if (value === 'light') {
-      document.documentElement.classList.remove('dark');
-    } else if (value === 'system') {
-      // Check system preference
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      if (prefersDark) {
-        document.documentElement.classList.add('dark');
-      } else {
-        document.documentElement.classList.remove('dark');
-      }
-    }
-    
     console.log(`Theme changed to: ${value}`);
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex w-full">
+    <div className="min-h-screen bg-background flex w-full">
       <Sidebar 
         isCollapsed={sidebarCollapsed} 
         onToggle={() => setSidebarCollapsed(!sidebarCollapsed)}
@@ -53,17 +79,17 @@ const Settings = () => {
           <div className="mb-8">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Settings</h2>
-                <p className="text-gray-600 dark:text-gray-300">Manage your account and application preferences</p>
+                <h2 className="text-3xl font-bold text-foreground mb-2">Settings</h2>
+                <p className="text-muted-foreground">Manage your account and application preferences</p>
               </div>
             </div>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2 space-y-6">
-              <Card className="dark:bg-gray-800 dark:border-gray-700">
+              <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center dark:text-white">
+                  <CardTitle className="flex items-center">
                     <User className="w-5 h-5 mr-2" />
                     Profile Settings
                   </CardTitle>
@@ -71,29 +97,29 @@ const Settings = () => {
                 <CardContent className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      <label className="block text-sm font-medium text-foreground mb-2">
                         First Name
                       </label>
-                      <Input defaultValue="Admin" className="dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
+                      <Input defaultValue="Admin" />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      <label className="block text-sm font-medium text-foreground mb-2">
                         Last Name
                       </label>
-                      <Input defaultValue="User" className="dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
+                      <Input defaultValue="User" />
                     </div>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    <label className="block text-sm font-medium text-foreground mb-2">
                       Email Address
                     </label>
-                    <Input type="email" defaultValue="admin@mindsparks.com" className="dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
+                    <Input type="email" defaultValue="admin@mindsparks.com" />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    <label className="block text-sm font-medium text-foreground mb-2">
                       Phone Number
                     </label>
-                    <Input type="tel" defaultValue="+1 (555) 123-4567" className="dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
+                    <Input type="tel" defaultValue="+1 (555) 123-4567" />
                   </div>
                   <Button className="bg-primary hover:bg-primary/90">
                     Save Changes
@@ -101,9 +127,9 @@ const Settings = () => {
                 </CardContent>
               </Card>
 
-              <Card className="dark:bg-gray-800 dark:border-gray-700">
+              <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center dark:text-white">
+                  <CardTitle className="flex items-center">
                     <Bell className="w-5 h-5 mr-2" />
                     Notification Preferences
                   </CardTitle>
@@ -111,8 +137,8 @@ const Settings = () => {
                 <CardContent className="space-y-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <h4 className="font-medium dark:text-white">Email Notifications</h4>
-                      <p className="text-sm text-gray-600 dark:text-gray-300">Receive notifications via email</p>
+                      <h4 className="font-medium text-foreground">Email Notifications</h4>
+                      <p className="text-sm text-muted-foreground">Receive notifications via email</p>
                     </div>
                     <Switch
                       checked={notifications.email}
@@ -123,8 +149,8 @@ const Settings = () => {
                   </div>
                   <div className="flex items-center justify-between">
                     <div>
-                      <h4 className="font-medium dark:text-white">Push Notifications</h4>
-                      <p className="text-sm text-gray-600 dark:text-gray-300">Receive push notifications on mobile</p>
+                      <h4 className="font-medium text-foreground">Push Notifications</h4>
+                      <p className="text-sm text-muted-foreground">Receive push notifications on mobile</p>
                     </div>
                     <Switch
                       checked={notifications.push}
@@ -135,8 +161,8 @@ const Settings = () => {
                   </div>
                   <div className="flex items-center justify-between">
                     <div>
-                      <h4 className="font-medium dark:text-white">Desktop Notifications</h4>
-                      <p className="text-sm text-gray-600 dark:text-gray-300">Show notifications on desktop</p>
+                      <h4 className="font-medium text-foreground">Desktop Notifications</h4>
+                      <p className="text-sm text-muted-foreground">Show notifications on desktop</p>
                     </div>
                     <Switch
                       checked={notifications.desktop}
@@ -148,33 +174,33 @@ const Settings = () => {
                 </CardContent>
               </Card>
 
-              <Card className="dark:bg-gray-800 dark:border-gray-700">
+              <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center dark:text-white">
+                  <CardTitle className="flex items-center">
                     <Shield className="w-5 h-5 mr-2" />
                     Security Settings
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    <label className="block text-sm font-medium text-foreground mb-2">
                       Current Password
                     </label>
-                    <Input type="password" placeholder="Enter current password" className="dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" />
+                    <Input type="password" placeholder="Enter current password" />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    <label className="block text-sm font-medium text-foreground mb-2">
                       New Password
                     </label>
-                    <Input type="password" placeholder="Enter new password" className="dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" />
+                    <Input type="password" placeholder="Enter new password" />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    <label className="block text-sm font-medium text-foreground mb-2">
                       Confirm New Password
                     </label>
-                    <Input type="password" placeholder="Confirm new password" className="dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" />
+                    <Input type="password" placeholder="Confirm new password" />
                   </div>
-                  <Button variant="outline" className="dark:border-gray-600 dark:text-white dark:hover:bg-gray-700">
+                  <Button variant="outline">
                     Update Password
                   </Button>
                 </CardContent>
@@ -182,43 +208,43 @@ const Settings = () => {
             </div>
 
             <div className="space-y-6">
-              <Card className="dark:bg-gray-800 dark:border-gray-700">
+              <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center dark:text-white">
+                  <CardTitle className="flex items-center">
                     <Palette className="w-5 h-5 mr-2" />
                     Appearance
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div>
-                    <h4 className="font-medium mb-3 dark:text-white">Theme</h4>
+                    <h4 className="font-medium mb-3 text-foreground">Theme</h4>
                     <RadioGroup value={theme} onValueChange={handleThemeChange}>
                       <div className="flex items-center space-x-2">
                         <RadioGroupItem value="light" id="light" />
-                        <Label htmlFor="light" className="text-sm dark:text-gray-300">Light</Label>
+                        <Label htmlFor="light" className="text-sm text-foreground">Light</Label>
                       </div>
                       <div className="flex items-center space-x-2">
                         <RadioGroupItem value="dark" id="dark" />
-                        <Label htmlFor="dark" className="text-sm dark:text-gray-300">Dark</Label>
+                        <Label htmlFor="dark" className="text-sm text-foreground">Dark</Label>
                       </div>
                       <div className="flex items-center space-x-2">
                         <RadioGroupItem value="system" id="system" />
-                        <Label htmlFor="system" className="text-sm dark:text-gray-300">System</Label>
+                        <Label htmlFor="system" className="text-sm text-foreground">System</Label>
                       </div>
                     </RadioGroup>
                   </div>
                 </CardContent>
               </Card>
 
-              <Card className="dark:bg-gray-800 dark:border-gray-700">
+              <Card>
                 <CardHeader>
-                  <CardTitle className="dark:text-white">Quick Actions</CardTitle>
+                  <CardTitle>Quick Actions</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
-                  <Button variant="outline" className="w-full justify-start dark:border-gray-600 dark:text-white dark:hover:bg-gray-700">
+                  <Button variant="outline" className="w-full justify-start">
                     Export Data
                   </Button>
-                  <Button variant="outline" className="w-full justify-start dark:border-gray-600 dark:text-white dark:hover:bg-gray-700">
+                  <Button variant="outline" className="w-full justify-start">
                     Import Settings
                   </Button>
                   <Button variant="destructive" className="w-full justify-start">

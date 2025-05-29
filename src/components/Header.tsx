@@ -6,21 +6,21 @@ import NotificationDropdown from './NotificationDropdown';
 
 const Header = () => {
   return (
-    <header className="bg-white border-b border-gray-200 px-6 py-4">
+    <header className="bg-background border-b border-border px-6 py-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
-          <h1 className="text-2xl font-bold text-gray-800">Dashboard</h1>
-          <div className="hidden md:block w-px h-6 bg-gray-300"></div>
-          <p className="hidden md:block text-gray-600">Welcome back! Here's what's happening with your projects.</p>
+          <h1 className="text-2xl font-bold text-foreground">Dashboard</h1>
+          <div className="hidden md:block w-px h-6 bg-border"></div>
+          <p className="hidden md:block text-muted-foreground">Welcome back! Here's what's happening with your projects.</p>
         </div>
         
         <div className="flex items-center space-x-4">
           {/* Search */}
           <div className="relative hidden md:block">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder="Search projects, tasks..."
-              className="pl-10 w-64 border-gray-300 focus:border-primary"
+              className="pl-10 w-64"
             />
           </div>
           
