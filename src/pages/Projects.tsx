@@ -86,8 +86,8 @@ const Projects = () => {
     navigate(`/projects/${projectId}`);
   };
 
-  const handleAddProject = (projectData: Omit<Project, 'id'>) => {
-    console.log('Adding new project:', projectData);
+  const handleCreateProject = (projectData: Omit<Project, 'id'>) => {
+    console.log('Creating new project:', projectData);
     const newProject: Project = {
       ...projectData,
       id: Math.max(...projects.map(p => p.id), 0) + 1
@@ -100,10 +100,10 @@ const Projects = () => {
     });
   };
 
-  const handleEditProject = (projectData: Omit<Project, 'id'>) => {
+  const handleUpdateProject = (projectData: Omit<Project, 'id'>) => {
     if (!editingProject) return;
     
-    console.log('Editing project:', editingProject.id, projectData);
+    console.log('Updating project:', editingProject.id, projectData);
     setProjects(prev => 
       prev.map(project => 
         project.id === editingProject.id 
@@ -139,6 +139,17 @@ const Projects = () => {
     console.log('Opening edit dialog for project:', project.id);
     setEditingProject(project);
     setIsEditDialogOpen(true);
+  };
+
+  const closeCreateDialog = () => {
+    console.log('Closing create dialog');
+    setIsCreateDialogOpen(false);
+  };
+
+  const closeEditDialog = () => {
+    console.log('Closing edit dialog');
+    setIsEditDialogOpen(false);
+    setEditingProject(undefined);
   };
 
   const getStatusColor = (status: string) => {
@@ -307,8 +318,8 @@ const Projects = () => {
           <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
             <DialogContent className="max-w-md">
               <ProjectForm
-                onSubmit={handleAddProject}
-                onCancel={() => setIsCreateDialogOpen(false)}
+                onSubmit={handleCreateProject}
+                onCancel={closeCreateDialog}
               />
             </DialogContent>
           </Dialog>
@@ -318,8 +329,8 @@ const Projects = () => {
             <DialogContent className="max-w-md">
               <ProjectForm
                 project={editingProject}
-                onSubmit={handleEditProject}
-                onCancel={() => setIsEditDialogOpen(false)}
+                onSubmit={handleUpdateProject}
+                onCancel={closeEditDialog}
               />
             </DialogContent>
           </Dialog>

@@ -34,12 +34,33 @@ const ProjectForm = ({ project, onSubmit, onCancel }: ProjectFormProps) => {
     priority: project?.priority || 'Medium' as const
   });
 
+  const [errors, setErrors] = useState<{[key: string]: string}>({});
+
+  const validateForm = () => {
+    const newErrors: {[key: string]: string} = {};
+    
+    if (!formData.title.trim()) {
+      newErrors.title = 'Project title is required';
+    }
+    
+    if (formData.teamMembers < 1) {
+      newErrors.teamMembers = 'Team members must be at least 1';
+    }
+    
+    if (formData.progress < 0 || formData.progress > 100) {
+      newErrors.progress = 'Progress must be between 0 and 100';
+    }
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log('Form submitted with data:', formData);
     
-    if (!formData.title.trim()) {
-      console.log('Title is required');
+    if (!validateForm()) {
+      console.log('Form validation failed:', errors);
       return;
     }
     
@@ -52,6 +73,14 @@ const ProjectForm = ({ project, onSubmit, onCancel }: ProjectFormProps) => {
       ...prev,
       [field]: value
     }));
+    
+    // Clear error when user starts typing
+    if (errors[field]) {
+      setErrors(prev => ({
+        ...prev,
+        [field]: ''
+      }));
+    }
   };
 
   return (
@@ -71,8 +100,9 @@ const ProjectForm = ({ project, onSubmit, onCancel }: ProjectFormProps) => {
             value={formData.title}
             onChange={(e) => handleChange('title', e.target.value)}
             placeholder="Enter project title"
-            required
+            className={errors.title ? 'border-red-500' : ''}
           />
+          {errors.title && <p className="text-red-500 text-xs mt-1">{errors.title}</p>}
         </div>
 
         <div>
@@ -148,7 +178,9 @@ const ProjectForm = ({ project, onSubmit, onCancel }: ProjectFormProps) => {
               min="1"
               value={formData.teamMembers}
               onChange={(e) => handleChange('teamMembers', parseInt(e.target.value) || 1)}
+              className={errors.teamMembers ? 'border-red-500' : ''}
             />
+            {errors.teamMembers && <p className="text-red-500 text-xs mt-1">{errors.teamMembers}</p>}
           </div>
         </div>
 
@@ -162,7 +194,9 @@ const ProjectForm = ({ project, onSubmit, onCancel }: ProjectFormProps) => {
             max="100"
             value={formData.progress}
             onChange={(e) => handleChange('progress', parseInt(e.target.value) || 0)}
+            className={errors.progress ? 'border-red-500' : ''}
           />
+          {errors.progress && <p className="text-red-500 text-xs mt-1">{errors.progress}</p>}
         </div>
 
         <div className="flex justify-end space-x-2 pt-4">
