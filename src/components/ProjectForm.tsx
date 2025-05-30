@@ -36,12 +36,18 @@ const ProjectForm = ({ project, onSubmit, onCancel }: ProjectFormProps) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.title.trim()) return;
+    console.log('Form submitted with data:', formData);
+    
+    if (!formData.title.trim()) {
+      console.log('Title is required');
+      return;
+    }
     
     onSubmit(formData);
   };
 
   const handleChange = (field: string, value: string | number) => {
+    console.log('Field changed:', field, value);
     setFormData(prev => ({
       ...prev,
       [field]: value
@@ -86,7 +92,10 @@ const ProjectForm = ({ project, onSubmit, onCancel }: ProjectFormProps) => {
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Status
             </label>
-            <Select value={formData.status} onValueChange={(value) => handleChange('status', value)}>
+            <Select 
+              value={formData.status} 
+              onValueChange={(value: 'Planning' | 'In Progress' | 'Completed') => handleChange('status', value)}
+            >
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
@@ -102,7 +111,10 @@ const ProjectForm = ({ project, onSubmit, onCancel }: ProjectFormProps) => {
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Priority
             </label>
-            <Select value={formData.priority} onValueChange={(value) => handleChange('priority', value)}>
+            <Select 
+              value={formData.priority} 
+              onValueChange={(value: 'Low' | 'Medium' | 'High') => handleChange('priority', value)}
+            >
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>

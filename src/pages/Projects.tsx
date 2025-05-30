@@ -7,7 +7,7 @@ import Header from '@/components/Header';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Badge } from '@/components/ui/badge';
 import ProjectForm from '@/components/ProjectForm';
@@ -28,9 +28,9 @@ const Projects = () => {
   const navigate = useNavigate();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [editingProject, setEditingProject] = useState<Project | undefined>(undefined);
-  const [deletingProject, setDeletingProject] = useState<Project | undefined>(undefined);
   const { toast } = useToast();
 
   const [projects, setProjects] = useState<Project[]>([
@@ -82,18 +82,20 @@ const Projects = () => {
   );
 
   const handleCardClick = (projectId: number) => {
+    console.log('Navigating to project:', projectId);
     navigate(`/projects/${projectId}`);
   };
 
   const handleAddProject = (projectData: Omit<Project, 'id'>) => {
+    console.log('Adding new project:', projectData);
     const newProject: Project = {
       ...projectData,
-      id: Math.max(...projects.map(p => p.id)) + 1
+      id: Math.max(...projects.map(p => p.id), 0) + 1
     };
     setProjects(prev => [...prev, newProject]);
-    setIsDialogOpen(false);
+    setIsCreateDialogOpen(false);
     toast({
-      title: "Project Added",
+      title: "Project Created",
       description: "New project has been created successfully."
     });
   };
@@ -101,6 +103,7 @@ const Projects = () => {
   const handleEditProject = (projectData: Omit<Project, 'id'>) => {
     if (!editingProject) return;
     
+    console.log('Editing project:', editingProject.id, projectData);
     setProjects(prev => 
       prev.map(project => 
         project.id === editingProject.id 
@@ -109,33 +112,33 @@ const Projects = () => {
       )
     );
     setEditingProject(undefined);
-    setIsDialogOpen(false);
+    setIsEditDialogOpen(false);
     toast({
       title: "Project Updated",
       description: "Project has been updated successfully."
     });
   };
 
-  const handleDeleteProject = () => {
-    if (!deletingProject) return;
-    
-    setProjects(prev => prev.filter(project => project.id !== deletingProject.id));
-    setDeletingProject(undefined);
+  const handleDeleteProject = (projectId: number) => {
+    console.log('Deleting project:', projectId);
+    setProjects(prev => prev.filter(project => project.id !== projectId));
     toast({
       title: "Project Deleted",
       description: "Project has been deleted successfully."
     });
   };
 
-  const openAddDialog = () => {
+  const openCreateDialog = () => {
+    console.log('Opening create dialog');
     setEditingProject(undefined);
-    setIsDialogOpen(true);
+    setIsCreateDialogOpen(true);
   };
 
   const openEditDialog = (project: Project, e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent card click
+    e.stopPropagation();
+    console.log('Opening edit dialog for project:', project.id);
     setEditingProject(project);
-    setIsDialogOpen(true);
+    setIsEditDialogOpen(true);
   };
 
   const getStatusColor = (status: string) => {
@@ -173,24 +176,13 @@ const Projects = () => {
                 <h2 className="text-3xl font-bold text-gray-900 mb-2">Projects</h2>
                 <p className="text-gray-600">Manage and track all your projects</p>
               </div>
-              <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                <DialogTrigger asChild>
-                  <Button 
-                    className="bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white"
-                    onClick={openAddDialog}
-                  >
-                    <PlusCircle className="w-4 h-4 mr-2" />
-                    New Project
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="max-w-md">
-                  <ProjectForm
-                    project={editingProject}
-                    onSubmit={editingProject ? handleEditProject : handleAddProject}
-                    onCancel={() => setIsDialogOpen(false)}
-                  />
-                </DialogContent>
-              </Dialog>
+              <Button 
+                onClick={openCreateDialog}
+                className="bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white"
+              >
+                <PlusCircle className="w-4 h-4 mr-2" />
+                New Project
+              </Button>
             </div>
 
             <div className="flex items-center space-x-4 mb-6">
@@ -237,10 +229,7 @@ const Projects = () => {
                             variant="ghost" 
                             size="sm"
                             className="h-8 w-8 p-0 text-red-500 hover:text-red-700"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setDeletingProject(project);
-                            }}
+                            onClick={(e) => e.stopPropagation()}
                           >
                             <Trash2 className="w-4 h-4" />
                           </Button>
@@ -253,11 +242,9 @@ const Projects = () => {
                             </AlertDialogDescription>
                           </AlertDialogHeader>
                           <AlertDialogFooter>
-                            <AlertDialogCancel onClick={() => setDeletingProject(undefined)}>
-                              Cancel
-                            </AlertDialogCancel>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
                             <AlertDialogAction 
-                              onClick={handleDeleteProject}
+                              onClick={() => handleDeleteProject(project.id)}
                               className="bg-red-500 hover:bg-red-600"
                             >
                               Delete
@@ -315,6 +302,27 @@ const Projects = () => {
               <p className="text-gray-600">Try adjusting your search terms or create a new project</p>
             </div>
           )}
+
+          {/* Create Project Dialog */}
+          <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+            <DialogContent className="max-w-md">
+              <ProjectForm
+                onSubmit={handleAddProject}
+                onCancel={() => setIsCreateDialogOpen(false)}
+              />
+            </DialogContent>
+          </Dialog>
+
+          {/* Edit Project Dialog */}
+          <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+            <DialogContent className="max-w-md">
+              <ProjectForm
+                project={editingProject}
+                onSubmit={handleEditProject}
+                onCancel={() => setIsEditDialogOpen(false)}
+              />
+            </DialogContent>
+          </Dialog>
         </main>
       </div>
     </div>
