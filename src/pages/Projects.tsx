@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PlusCircle, Filter, Search, Edit, Trash2, Calendar, Users } from 'lucide-react';
@@ -81,113 +82,82 @@ const Projects = () => {
   );
 
   const handleCardClick = (projectId: number) => {
-    console.log('Navigating to project:', projectId);
+    console.log('Projects: Navigating to project detail:', projectId);
     navigate(`/projects/${projectId}`);
   };
 
   const handleCreateProject = (projectData: Omit<Project, 'id'>) => {
-    console.log('Creating new project with data:', projectData);
-    try {
-      const newProject: Project = {
-        ...projectData,
-        id: Math.max(...projects.map(p => p.id), 0) + 1
-      };
-      
-      console.log('New project created:', newProject);
-      setProjects(prev => [...prev, newProject]);
-      
-      // Close dialog first
-      setIsCreateDialogOpen(false);
-      
-      // Show success toast
-      toast({
-        title: "Success!",
-        description: "New project has been created successfully."
-      });
-      
-      console.log('Project creation completed successfully');
-    } catch (error) {
-      console.error('Error creating project:', error);
-      toast({
-        title: "Error",
-        description: "Failed to create project. Please try again."
-      });
-    }
+    console.log('Projects: Creating new project:', projectData);
+    
+    const newProject: Project = {
+      ...projectData,
+      id: Math.max(...projects.map(p => p.id), 0) + 1
+    };
+    
+    setProjects(prev => [...prev, newProject]);
+    setIsCreateDialogOpen(false);
+    
+    toast({
+      title: "Project Created",
+      description: "New project has been created successfully."
+    });
+    
+    console.log('Projects: Project created successfully:', newProject);
   };
 
   const handleUpdateProject = (projectData: Omit<Project, 'id'>) => {
-    if (!editingProject) {
-      console.log('No editing project found');
-      return;
-    }
+    if (!editingProject) return;
     
-    console.log('Updating project:', editingProject.id, 'with data:', projectData);
-    try {
-      setProjects(prev => 
-        prev.map(project => 
-          project.id === editingProject.id 
-            ? { ...projectData, id: editingProject.id }
-            : project
-        )
-      );
-      
-      // Close dialog and clear editing state
-      setEditingProject(undefined);
-      setIsEditDialogOpen(false);
-      
-      toast({
-        title: "Success!",
-        description: "Project has been updated successfully."
-      });
-      
-      console.log('Project update completed successfully');
-    } catch (error) {
-      console.error('Error updating project:', error);
-      toast({
-        title: "Error",
-        description: "Failed to update project. Please try again."
-      });
-    }
+    console.log('Projects: Updating project:', editingProject.id);
+    
+    setProjects(prev => 
+      prev.map(project => 
+        project.id === editingProject.id 
+          ? { ...projectData, id: editingProject.id }
+          : project
+      )
+    );
+    
+    setEditingProject(undefined);
+    setIsEditDialogOpen(false);
+    
+    toast({
+      title: "Project Updated",
+      description: "Project has been updated successfully."
+    });
   };
 
   const handleDeleteProject = (projectId: number) => {
-    console.log('Deleting project:', projectId);
-    try {
-      setProjects(prev => prev.filter(project => project.id !== projectId));
-      toast({
-        title: "Success!",
-        description: "Project has been deleted successfully."
-      });
-      console.log('Project deletion completed successfully');
-    } catch (error) {
-      console.error('Error deleting project:', error);
-      toast({
-        title: "Error",
-        description: "Failed to delete project. Please try again."
-      });
-    }
+    console.log('Projects: Deleting project:', projectId);
+    
+    setProjects(prev => prev.filter(project => project.id !== projectId));
+    
+    toast({
+      title: "Project Deleted",
+      description: "Project has been deleted successfully."
+    });
   };
 
   const openCreateDialog = () => {
-    console.log('Opening create project dialog');
+    console.log('Projects: Opening create dialog');
     setEditingProject(undefined);
     setIsCreateDialogOpen(true);
   };
 
   const openEditDialog = (project: Project, e: React.MouseEvent) => {
     e.stopPropagation();
-    console.log('Opening edit dialog for project:', project.id);
+    console.log('Projects: Opening edit dialog for:', project.id);
     setEditingProject(project);
     setIsEditDialogOpen(true);
   };
 
   const closeCreateDialog = () => {
-    console.log('Closing create dialog');
+    console.log('Projects: Closing create dialog');
     setIsCreateDialogOpen(false);
   };
 
   const closeEditDialog = () => {
-    console.log('Closing edit dialog');
+    console.log('Projects: Closing edit dialog');
     setIsEditDialogOpen(false);
     setEditingProject(undefined);
   };

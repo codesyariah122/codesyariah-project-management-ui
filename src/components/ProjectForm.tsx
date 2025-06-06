@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 
 interface Project {
   id: number;
@@ -35,7 +35,6 @@ const ProjectForm = ({ project, onSubmit, onCancel }: ProjectFormProps) => {
   });
 
   const [errors, setErrors] = useState<{[key: string]: string}>({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const validateForm = () => {
     const newErrors: {[key: string]: string} = {};
@@ -56,37 +55,20 @@ const ProjectForm = ({ project, onSubmit, onCancel }: ProjectFormProps) => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('ProjectForm: handleSubmit called with data:', formData);
+    console.log('ProjectForm: handleSubmit called');
     
-    if (isSubmitting) {
-      console.log('ProjectForm: Already submitting, ignoring duplicate submission');
+    if (!validateForm()) {
+      console.log('ProjectForm: Form validation failed');
       return;
     }
     
-    setIsSubmitting(true);
-    
-    try {
-      if (!validateForm()) {
-        console.log('ProjectForm: Form validation failed:', errors);
-        setIsSubmitting(false);
-        return;
-      }
-      
-      console.log('ProjectForm: Form validation passed, calling onSubmit');
-      await onSubmit(formData);
-      console.log('ProjectForm: onSubmit completed successfully');
-      
-    } catch (error) {
-      console.error('ProjectForm: Error during submission:', error);
-    } finally {
-      setIsSubmitting(false);
-    }
+    console.log('ProjectForm: Form valid, submitting:', formData);
+    onSubmit(formData);
   };
 
   const handleChange = (field: string, value: string | number) => {
-    console.log('ProjectForm: Field changed:', field, value);
     setFormData(prev => ({
       ...prev,
       [field]: value
@@ -101,17 +83,15 @@ const ProjectForm = ({ project, onSubmit, onCancel }: ProjectFormProps) => {
     }
   };
 
-  const handleCancel = () => {
-    console.log('ProjectForm: Cancel button clicked');
-    onCancel();
-  };
-
   return (
     <div>
       <DialogHeader>
         <DialogTitle>
           {project ? 'Edit Project' : 'Create New Project'}
         </DialogTitle>
+        <DialogDescription>
+          {project ? 'Update your project details below.' : 'Fill in the details to create a new project.'}
+        </DialogDescription>
       </DialogHeader>
       
       <form onSubmit={handleSubmit} className="space-y-4 mt-4">
@@ -124,7 +104,6 @@ const ProjectForm = ({ project, onSubmit, onCancel }: ProjectFormProps) => {
             onChange={(e) => handleChange('title', e.target.value)}
             placeholder="Enter project title"
             className={errors.title ? 'border-red-500' : ''}
-            disabled={isSubmitting}
           />
           {errors.title && <p className="text-red-500 text-xs mt-1">{errors.title}</p>}
         </div>
@@ -138,7 +117,6 @@ const ProjectForm = ({ project, onSubmit, onCancel }: ProjectFormProps) => {
             onChange={(e) => handleChange('description', e.target.value)}
             placeholder="Enter project description"
             rows={3}
-            disabled={isSubmitting}
           />
         </div>
 
@@ -150,7 +128,6 @@ const ProjectForm = ({ project, onSubmit, onCancel }: ProjectFormProps) => {
             <Select 
               value={formData.status} 
               onValueChange={(value: 'Planning' | 'In Progress' | 'Completed') => handleChange('status', value)}
-              disabled={isSubmitting}
             >
               <SelectTrigger>
                 <SelectValue />
@@ -170,7 +147,6 @@ const ProjectForm = ({ project, onSubmit, onCancel }: ProjectFormProps) => {
             <Select 
               value={formData.priority} 
               onValueChange={(value: 'Low' | 'Medium' | 'High') => handleChange('priority', value)}
-              disabled={isSubmitting}
             >
               <SelectTrigger>
                 <SelectValue />
@@ -193,7 +169,6 @@ const ProjectForm = ({ project, onSubmit, onCancel }: ProjectFormProps) => {
               value={formData.dueDate}
               onChange={(e) => handleChange('dueDate', e.target.value)}
               placeholder="e.g., Jan 30, 2024"
-              disabled={isSubmitting}
             />
           </div>
 
@@ -207,7 +182,6 @@ const ProjectForm = ({ project, onSubmit, onCancel }: ProjectFormProps) => {
               value={formData.teamMembers}
               onChange={(e) => handleChange('teamMembers', parseInt(e.target.value) || 1)}
               className={errors.teamMembers ? 'border-red-500' : ''}
-              disabled={isSubmitting}
             />
             {errors.teamMembers && <p className="text-red-500 text-xs mt-1">{errors.teamMembers}</p>}
           </div>
@@ -224,7 +198,6 @@ const ProjectForm = ({ project, onSubmit, onCancel }: ProjectFormProps) => {
             value={formData.progress}
             onChange={(e) => handleChange('progress', parseInt(e.target.value) || 0)}
             className={errors.progress ? 'border-red-500' : ''}
-            disabled={isSubmitting}
           />
           {errors.progress && <p className="text-red-500 text-xs mt-1">{errors.progress}</p>}
         </div>
@@ -233,17 +206,15 @@ const ProjectForm = ({ project, onSubmit, onCancel }: ProjectFormProps) => {
           <Button 
             type="button" 
             variant="outline" 
-            onClick={handleCancel}
-            disabled={isSubmitting}
+            onClick={onCancel}
           >
             Cancel
           </Button>
           <Button 
             type="submit" 
             className="bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90"
-            disabled={isSubmitting}
           >
-            {isSubmitting ? 'Processing...' : (project ? 'Update Project' : 'Create Project')}
+            {project ? 'Update Project' : 'Create Project'}
           </Button>
         </div>
       </form>
