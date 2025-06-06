@@ -35,6 +35,7 @@ const ProjectForm = ({ project, onSubmit, onCancel }: ProjectFormProps) => {
   });
 
   const [errors, setErrors] = useState<{[key: string]: string}>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const validateForm = () => {
     const newErrors: {[key: string]: string} = {};
@@ -55,20 +56,37 @@ const ProjectForm = ({ project, onSubmit, onCancel }: ProjectFormProps) => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Form submitted with data:', formData);
+    console.log('ProjectForm: handleSubmit called with data:', formData);
     
-    if (!validateForm()) {
-      console.log('Form validation failed:', errors);
+    if (isSubmitting) {
+      console.log('ProjectForm: Already submitting, ignoring duplicate submission');
       return;
     }
     
-    onSubmit(formData);
+    setIsSubmitting(true);
+    
+    try {
+      if (!validateForm()) {
+        console.log('ProjectForm: Form validation failed:', errors);
+        setIsSubmitting(false);
+        return;
+      }
+      
+      console.log('ProjectForm: Form validation passed, calling onSubmit');
+      await onSubmit(formData);
+      console.log('ProjectForm: onSubmit completed successfully');
+      
+    } catch (error) {
+      console.error('ProjectForm: Error during submission:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (field: string, value: string | number) => {
-    console.log('Field changed:', field, value);
+    console.log('ProjectForm: Field changed:', field, value);
     setFormData(prev => ({
       ...prev,
       [field]: value
@@ -81,6 +99,11 @@ const ProjectForm = ({ project, onSubmit, onCancel }: ProjectFormProps) => {
         [field]: ''
       }));
     }
+  };
+
+  const handleCancel = () => {
+    console.log('ProjectForm: Cancel button clicked');
+    onCancel();
   };
 
   return (
@@ -101,6 +124,7 @@ const ProjectForm = ({ project, onSubmit, onCancel }: ProjectFormProps) => {
             onChange={(e) => handleChange('title', e.target.value)}
             placeholder="Enter project title"
             className={errors.title ? 'border-red-500' : ''}
+            disabled={isSubmitting}
           />
           {errors.title && <p className="text-red-500 text-xs mt-1">{errors.title}</p>}
         </div>
@@ -114,6 +138,7 @@ const ProjectForm = ({ project, onSubmit, onCancel }: ProjectFormProps) => {
             onChange={(e) => handleChange('description', e.target.value)}
             placeholder="Enter project description"
             rows={3}
+            disabled={isSubmitting}
           />
         </div>
 
@@ -125,6 +150,7 @@ const ProjectForm = ({ project, onSubmit, onCancel }: ProjectFormProps) => {
             <Select 
               value={formData.status} 
               onValueChange={(value: 'Planning' | 'In Progress' | 'Completed') => handleChange('status', value)}
+              disabled={isSubmitting}
             >
               <SelectTrigger>
                 <SelectValue />
@@ -144,6 +170,7 @@ const ProjectForm = ({ project, onSubmit, onCancel }: ProjectFormProps) => {
             <Select 
               value={formData.priority} 
               onValueChange={(value: 'Low' | 'Medium' | 'High') => handleChange('priority', value)}
+              disabled={isSubmitting}
             >
               <SelectTrigger>
                 <SelectValue />
@@ -166,6 +193,7 @@ const ProjectForm = ({ project, onSubmit, onCancel }: ProjectFormProps) => {
               value={formData.dueDate}
               onChange={(e) => handleChange('dueDate', e.target.value)}
               placeholder="e.g., Jan 30, 2024"
+              disabled={isSubmitting}
             />
           </div>
 
@@ -179,6 +207,7 @@ const ProjectForm = ({ project, onSubmit, onCancel }: ProjectFormProps) => {
               value={formData.teamMembers}
               onChange={(e) => handleChange('teamMembers', parseInt(e.target.value) || 1)}
               className={errors.teamMembers ? 'border-red-500' : ''}
+              disabled={isSubmitting}
             />
             {errors.teamMembers && <p className="text-red-500 text-xs mt-1">{errors.teamMembers}</p>}
           </div>
@@ -195,19 +224,26 @@ const ProjectForm = ({ project, onSubmit, onCancel }: ProjectFormProps) => {
             value={formData.progress}
             onChange={(e) => handleChange('progress', parseInt(e.target.value) || 0)}
             className={errors.progress ? 'border-red-500' : ''}
+            disabled={isSubmitting}
           />
           {errors.progress && <p className="text-red-500 text-xs mt-1">{errors.progress}</p>}
         </div>
 
         <div className="flex justify-end space-x-2 pt-4">
-          <Button type="button" variant="outline" onClick={onCancel}>
+          <Button 
+            type="button" 
+            variant="outline" 
+            onClick={handleCancel}
+            disabled={isSubmitting}
+          >
             Cancel
           </Button>
           <Button 
             type="submit" 
             className="bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90"
+            disabled={isSubmitting}
           >
-            {project ? 'Update Project' : 'Create Project'}
+            {isSubmitting ? 'Processing...' : (project ? 'Update Project' : 'Create Project')}
           </Button>
         </div>
       </form>
