@@ -1,119 +1,114 @@
-import { useState } from 'react';
-import { 
-  Folder, 
-  Users, 
-  CalendarCheck,
-  PencilLine
-} from 'lucide-react';
-import Sidebar from '@/components/Sidebar';
-import Header from '@/components/Header';
-import StatsCard from '@/components/StatsCard';
-import ProjectCard from '@/components/ProjectCard';
-import TaskBoard from '@/components/TaskBoard';
-import { Button } from '@/components/ui/button';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Folder, Users, CalendarCheck, PencilLine } from "lucide-react";
+import Sidebar from "@/components/Sidebar";
+import Header from "@/components/Header";
+import StatsCard from "@/components/StatsCard";
+import ProjectCard from "@/components/ProjectCard";
+import TaskBoard from "@/components/TaskBoard";
+import { Button } from "@/components/ui/button";
 
 const Index = () => {
+  const navigate = useNavigate();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
-  const handleNewProject = () => {
-    console.log('Creating new project...');
-    // TODO: Implement project creation modal
-  };
-
   const handleViewAllProjects = () => {
-    console.log('Viewing all projects...');
-    // TODO: Navigate to projects page or show modal
+    console.log("Viewing all projects...");
+    navigate("/projects");
   };
 
   const handleAddTask = () => {
-    console.log('Adding new task...');
+    console.log("Adding new task...");
     // TODO: Implement task creation modal
   };
 
   const statsData = [
     {
-      title: 'Active Projects',
-      value: '12',
-      change: '+2.5%',
-      changeType: 'increase' as const,
+      title: "Active Projects",
+      value: "12",
+      change: "+2.5%",
+      changeType: "increase" as const,
       icon: Folder,
-      color: 'bg-primary'
+      color: "bg-primary",
     },
     {
-      title: 'Team Members',
-      value: '24',
-      change: '+4.1%',
-      changeType: 'increase' as const,
+      title: "Team Members",
+      value: "24",
+      change: "+4.1%",
+      changeType: "increase" as const,
       icon: Users,
-      color: 'bg-secondary'
+      color: "bg-secondary",
     },
     {
-      title: 'Completed Tasks',
-      value: '156',
-      change: '+12.3%',
-      changeType: 'increase' as const,
+      title: "Completed Tasks",
+      value: "156",
+      change: "+12.3%",
+      changeType: "increase" as const,
       icon: CalendarCheck,
-      color: 'bg-accent'
+      color: "bg-accent",
     },
     {
-      title: 'In Progress',
-      value: '8',
-      change: '-2.1%',
-      changeType: 'decrease' as const,
+      title: "In Progress",
+      value: "8",
+      change: "-2.1%",
+      changeType: "decrease" as const,
       icon: PencilLine,
-      color: 'bg-orange-500'
-    }
+      color: "bg-orange-500",
+    },
   ];
 
   const projects = [
     {
-      title: 'MindSparks Website Redesign',
-      description: 'Complete overhaul of the company website with modern design and improved UX',
-      status: 'In Progress' as const,
-      dueDate: 'Jan 30, 2024',
+      title: "MindSparks Website Redesign",
+      description:
+        "Complete overhaul of the company website with modern design and improved UX",
+      status: "In Progress" as const,
+      dueDate: "Jan 30, 2024",
       teamMembers: 5,
       progress: 75,
-      priority: 'High' as const
+      priority: "High" as const,
     },
     {
-      title: 'Mobile App Development',
-      description: 'React Native mobile application for iOS and Android platforms',
-      status: 'In Progress' as const,
-      dueDate: 'Feb 15, 2024',
+      title: "Mobile App Development",
+      description:
+        "React Native mobile application for iOS and Android platforms",
+      status: "In Progress" as const,
+      dueDate: "Feb 15, 2024",
       teamMembers: 3,
       progress: 45,
-      priority: 'High' as const
+      priority: "High" as const,
     },
     {
-      title: 'Brand Identity Update',
-      description: 'Refresh brand guidelines, logo, and marketing materials',
-      status: 'Completed' as const,
-      dueDate: 'Jan 10, 2024',
+      title: "Brand Identity Update",
+      description: "Refresh brand guidelines, logo, and marketing materials",
+      status: "Completed" as const,
+      dueDate: "Jan 10, 2024",
       teamMembers: 4,
       progress: 100,
-      priority: 'Medium' as const
+      priority: "Medium" as const,
     },
     {
-      title: 'Data Analytics Platform',
-      description: 'Build internal analytics dashboard for business intelligence',
-      status: 'Planning' as const,
-      dueDate: 'Mar 1, 2024',
+      title: "Data Analytics Platform",
+      description:
+        "Build internal analytics dashboard for business intelligence",
+      status: "Planning" as const,
+      dueDate: "Mar 1, 2024",
       teamMembers: 6,
       progress: 15,
-      priority: 'Low' as const
-    }
+      priority: "Low" as const,
+    },
   ];
 
   return (
     <div className="min-h-screen bg-gray-50 flex w-full">
-      <Sidebar 
-        isCollapsed={sidebarCollapsed} 
+      <Sidebar
+        isCollapsed={sidebarCollapsed}
         onToggle={() => setSidebarCollapsed(!sidebarCollapsed)}
       />
-      
+
       <div className="flex-1 flex flex-col">
         <Header />
-        
+
         <main className="flex-1 p-6 overflow-auto">
           {/* Welcome Section */}
           <div className="mb-8" id="projects">
@@ -126,9 +121,9 @@ const Index = () => {
                   Manage your projects efficiently and spark innovation together
                 </p>
               </div>
-              <Button 
+              <Button
                 className="bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white"
-                onClick={handleNewProject}
+                onClick={handleViewAllProjects}
               >
                 <PencilLine className="w-4 h-4 mr-2" />
                 New Project
@@ -139,7 +134,11 @@ const Index = () => {
           {/* Stats Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             {statsData.map((stat, index) => (
-              <div key={index} className="animate-fade-in" style={{ animationDelay: `${index * 0.1}s` }}>
+              <div
+                key={index}
+                className="animate-fade-in"
+                style={{ animationDelay: `${index * 0.1}s` }}
+              >
                 <StatsCard {...stat} />
               </div>
             ))}
@@ -148,19 +147,25 @@ const Index = () => {
           {/* Projects Section */}
           <div className="mb-8">
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-xl font-semibold text-gray-900">Recent Projects</h3>
-              <Button 
-                variant="outline" 
+              <h3 className="text-xl font-semibold text-gray-900">
+                Recent Projects
+              </h3>
+              <Button
+                variant="outline"
                 size="sm"
                 onClick={handleViewAllProjects}
               >
                 View All Projects
               </Button>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {projects.map((project, index) => (
-                <div key={index} className="animate-fade-in" style={{ animationDelay: `${index * 0.1}s` }}>
+                <div
+                  key={index}
+                  className="animate-fade-in"
+                  style={{ animationDelay: `${index * 0.1}s` }}
+                >
                   <ProjectCard {...project} />
                 </div>
               ))}
@@ -170,17 +175,15 @@ const Index = () => {
           {/* Task Board Section */}
           <div className="mb-8" id="tasks">
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-xl font-semibold text-gray-900">Task Board</h3>
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={handleAddTask}
-              >
+              <h3 className="text-xl font-semibold text-gray-900">
+                Task Board
+              </h3>
+              <Button variant="outline" size="sm" onClick={handleAddTask}>
                 <PencilLine className="w-4 h-4 mr-2" />
                 Add Task
               </Button>
             </div>
-            
+
             <div className="animate-fade-in">
               <TaskBoard />
             </div>
