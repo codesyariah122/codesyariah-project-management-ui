@@ -1,73 +1,46 @@
-# Welcome to your Lovable project
+# 🚧 Codesyariah Project Management – UI Prototype
 
-## Project info
+**Codesyariah Project Management** adalah prototipe antarmuka pengguna (UI) untuk sebuah aplikasi manajemen proyek berbasis web. Prototipe ini dibangun untuk menggambarkan alur kerja, tampilan, dan fungsionalitas inti dari aplikasi yang sedang dikembangkan oleh tim **Codesyariah**.
 
-**URL**: https://lovable.dev/projects/33f1d532-18e9-4f9f-8e4a-8ddf976acab1
+> 💡 Proyek ini masih dalam tahap pengembangan UI dan belum memiliki backend fungsional.
 
-## How can I edit this code?
+---
 
-There are several ways of editing your application.
+## 🎯 Tujuan Proyek
 
-**Use Lovable**
+- Mendesain antarmuka pengguna modern dan responsif.
+- Menyusun struktur halaman dan komponen berbasis project management.
+- Menjadi fondasi pengembangan aplikasi manajemen proyek berbasis syariah.
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/33f1d532-18e9-4f9f-8e4a-8ddf976acab1) and start prompting.
+---
 
-Changes made via Lovable will be committed automatically to this repo.
+## 🧩 Fitur UI (Prototipe)
 
-**Use your preferred IDE**
+- ✅ Dashboard proyek
+- ✅ Task board (Kanban-style)
+- ✅ Detail proyek dan tugas
+- ✅ Sidebar navigasi responsif
+- ✅ Komponen modular (cards, modals, forms, dll.)
+- ⏳ Layout responsif untuk desktop dan mobile
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+---
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+## 🛠️ Teknologi yang Digunakan
 
-Follow these steps:
+| Layer         | Teknologi                   |
+|---------------|-----------------------------|
+| Build Tool    | [Vite](https://vitejs.dev/) |
+| Framework     | [React](https://reactjs.org/), [Next.js](https://nextjs.org/) |
+| Styling       | Tailwind CSS (opsional: Bootstrap, custom SCSS) |
+| Icon/Assets   | Heroicons / Custom SVG      |
+| State (opsional) | Zustand / Redux / Context API |
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+---
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+## 📦 Instalasi Lokal
 
-# Step 3: Install the necessary dependencies.
-npm i
+1. **Clone repo ini:**
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
-
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/33f1d532-18e9-4f9f-8e4a-8ddf976acab1) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+```bash
+git clone https://github.com/username/codesyariah-project-management.git
+cd codesyariah-project-management
